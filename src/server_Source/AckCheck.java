@@ -2,14 +2,14 @@ package server_Source;
 
 
 public class AckCheck  {
-    
+    private final TCPReceive serverTcp;
     private final TcpConnectionAccepter.ClientHandler handler;
     
     
  	
     
-    public AckCheck(TcpConnectionAccepter.ClientHandler handler) {
-        
+    public AckCheck(TCPReceive serverTCP, TcpConnectionAccepter.ClientHandler handler) {
+        this.serverTcp = serverTCP;
         this.handler = handler;
     }
     
