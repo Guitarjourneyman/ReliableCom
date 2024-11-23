@@ -112,6 +112,7 @@ public class GUI extends JFrame {
         inputIp = new JTextField("192.168.0.228", 15);
         //자동으로 WifiBroadAddress를 찾는 클래스 실행
         //edit
+        
       		InetAddress BroadcastAddress = BroadcastAddressFinder.getWiFiBroadcastAddress();
       		if (BroadcastAddress != null) {
       			String BroadIP = BroadcastAddress.getHostAddress();
@@ -147,9 +148,9 @@ public class GUI extends JFrame {
         
         buttonPanel_4.add(connectionSetup_Button,BorderLayout.NORTH);
         buttonPanel_4.add(stopSetup_Button,BorderLayout.SOUTH);
-        buttonPanel_main.add(buttonPanel_4);
-        buttonPanel_5.add(sendButton_UDP,BorderLayout.NORTH);
-        buttonPanel_5.add(sendStopButton_UDP,BorderLayout.SOUTH);
+        //buttonPanel_main.add(buttonPanel_4);
+        //buttonPanel_5.add(sendButton_UDP,BorderLayout.NORTH);
+        //buttonPanel_5.add(sendStopButton_UDP,BorderLayout.SOUTH);
         buttonPanel_5.add(receiveButton_UDP,BorderLayout.SOUTH);
         buttonPanel_main.add(buttonPanel_5);
                

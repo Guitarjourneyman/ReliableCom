@@ -112,7 +112,7 @@ public class TCPReceive {
         }
     }*/
     public void startReceiving() throws IOException { // 예외를 throw하여 ClientHandler에서 처리하도록 설계
-        AckCheck startCheck = new AckCheck(handler);
+        AckCheck startCheck = new AckCheck(this, handler);
 
         DataInputStream dataInputStream = null; // 데이터 수신을 위한 DataInputStream
        
@@ -140,10 +140,11 @@ public class TCPReceive {
                                             ": " + receivedBoolean + " - " + receivedMessage + "\n");
 
                 System.out.println("새로운 확인 메시지가 수신되었습니다: " + receivedBoolean);
-                
-                startCheck.startChecking();
+
                 //모든 바이트배열이 1이었다면, StartTCPCheck의 checking 메서드 호출
-                
+                if(receivedBoolean) {
+                	startCheck.startChecking();
+                }
                 
             }
         } finally {

@@ -86,30 +86,30 @@ public class UDPBroadcastSend implements Runnable  {
 		
         
         try {
-			// 설정한 시간 동안 대기
-			long interval = 50;
-
-			while (true) {
-				if (Main.tcpconnectionManager.checkAllClientsNewMessage()) {
-
-					consoleArea.append("모든 클라이언트로부터 " + "[" + sentMessageCount + "]의 에코 메시지를 받았으므로 브로드캐스트 중지\n");
-					Main.tcpconnectionManager.AllClientsSetFalse(); // 에코메시지 수신여부 초기화
-					sentMessageCount++; // 전송 메시지 카운트 증가
-
-				}
-				if (sentMessageCount == 0)
-					sentMessageCount++; // 첫 메시지 발송때만 카운트 증가
-
-				startSend(); // 50ms마다 UDP 메시지 전송
-
-				// sendMessageArea에 보내는 메시지 추가
-				sentMessageCount_actual++;
-				sendMessageArea.append("[" + sentMessageCount_actual + "][" + sentMessageCount
-						+ "] message via UDP: 'A' * 61440 bytes\n");
-
-				Thread.sleep(interval);
-			}
-
+        		// 설정한 시간 동안 대기
+            	long interval = 50;
+            	
+            	while(true) {
+            		if (Main.tcpconnectionManager.checkAllClientsNewMessage()) {
+                    	
+                        consoleArea.append("모든 클라이언트로부터 "+"[" + sentMessageCount + "]의 에코 메시지를 받았으므로 브로드캐스트 중지\n");                            
+                        Main.tcpconnectionManager.AllClientsSetFalse(); //에코메시지 수신여부 초기화 
+                        sentMessageCount++; // 전송 메시지 카운트 증가
+                        
+                    }
+                   if (sentMessageCount == 0) sentMessageCount++; // 첫 메시지 발송때만 카운트 증가 
+                   
+                   		startSend();   // 50ms마다 UDP 메시지 전송
+                    
+                    // sendMessageArea에 보내는 메시지 추가
+                    sentMessageCount_actual++;
+                    sendMessageArea.append("[" + sentMessageCount_actual +"][" +sentMessageCount + "] message via UDP: 'A' * 61440 bytes\n");
+                 
+                    
+                    Thread.sleep(interval);
+            	}
+                
+                
             }catch (Exception e) {
                 e.printStackTrace();
             } finally {
