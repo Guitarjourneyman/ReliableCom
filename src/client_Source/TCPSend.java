@@ -91,6 +91,22 @@ public class TCPSend {
             e.printStackTrace();
         }
     }
+    
+public void sendAckObject(byte[] byteArray) {
+	try (
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream())) {
+			//Ack按眉 积己
+        	Ack ack = new Ack(byteArray);
+        
+           // Ack 按眉 傈价
+           objectOutputStream.writeObject(ack);
+           System.out.println("Ack object sent.");
+
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+		
+	}
 
 
 
@@ -120,7 +136,7 @@ public class TCPSend {
                 System.out.println("Server closed the connection.");
                 //Message num 檬扁拳
                 UDPReceive.receivedMessageNum =1;
-                Main.receiver_udp.resetUDPreceiving();
+                UDPReceive.closeUDPbyReset();
                 Main.receiver_udp = null;
             } catch (IOException e) {
                 System.out.println("Connection closed.");
@@ -128,4 +144,6 @@ public class TCPSend {
         });
         receiveResetThread.start();
     }
+
+	
 }

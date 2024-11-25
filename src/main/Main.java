@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class Main {
 	/*Server*/
-	public static TcpConnectionManager tcpconnectionManager = new TcpConnectionManager();
+	public static ClientManager tcpconnectionManager = new ClientManager();
 	public static int clients_tcp_index = 0; // 에코메시지의 배열의 인덱스
 	
     private static UDPBroadcastSend sender_udp;
@@ -24,7 +24,7 @@ public class Main {
     private static Timer udpTimer_IP; //SETUP 과정을 위한 UDP broadcast를 위한 타이머
     private static Thread senderThread;// UDP 전송을 위한 타이머
     private static Thread accepterThread;
-    private static int SIZE = 61440;
+    public static int SIZE = 61440;
     /*Client*/
     public static UDPReceive receiver_udp;
     private static TcpSocketConnection tcp_connection;
@@ -37,7 +37,7 @@ public class Main {
 	public static void ComSetup () {
 		//수정한 이유: 병렬스레드처리로 하지않으면 socket.accept하는 부분에서 멈추게 된다.
     	if (tcp_accepter == null) {
-    		tcp_accepter = new TcpConnectionAccepter(GUI.receivedMessagesArea,GUI.consoleArea);
+    		tcp_accepter = new TcpConnectionAccepter();
     		accepterThread = new Thread(tcp_accepter);
    		 	accepterThread.start();
             GUI.consoleArea.append("TCP Connection Accepter thread started.\n");
@@ -76,7 +76,7 @@ public class Main {
         
         String serverIP = GUI.inputIp_udpBroad.getText();
         if(sender_udp == null && senderThread == null) {
-        	sender_udp = new UDPBroadcastSend(serverIP,GUI.sendMessageArea,GUI.consoleArea,SIZE);
+        	sender_udp = new UDPBroadcastSend(serverIP);
             //sender_udp 스레드화
             senderThread = new Thread(sender_udp);
             senderThread.start();
@@ -124,14 +124,14 @@ public class Main {
 	/*   The methods are necessary by client */
 	public static void ComSetupResponse () {
 		tcp_connection = new TcpSocketConnection();
-        receiver_udp = new UDPReceive(GUI.receivedMessagesArea);
+        //receiver_udp = new UDPReceive();
         String serverIP = receiver_udp.startConnect_to_tcp();
         tcp_connection.startClient(serverIP);
         GUI.consoleArea.append("Client: "+serverIP+"가 TCP 소켓과 연결되었습니다. \n");
 	}
 
 	public static void ComReceive() {
-		receiver_udp = new UDPReceive(GUI.receivedMessagesArea);  // receivedMessagesArea 전달
+		//receiver_udp = new UDPReceive();
         new Thread(() -> receiver_udp.startServer()).start();
         GUI.consoleArea.append("UDP 수신 대기 중...\n");
         //UDP Broad메시지를 수신하였지 체크하는 스레드 생성 

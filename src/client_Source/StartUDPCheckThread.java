@@ -22,7 +22,7 @@ public class StartUDPCheckThread implements Runnable {
                 	//byte배열만 Ack메시지로 보내게된다. sendAckMessage는 재정의되어있음
                 	//tcpConnection.sendAckMessage(receiver_udp.checkNewMessage);
                 	             
-                	printByteArrayAsBinary(receiver_udp.checkNewMessage); // 보낸 ack내용 출력           	
+                	//printByteArrayAsBinary(receiver_udp.checkNewMessage); // 보낸 ack내용 출력           	
 
                 	// 배열의 모든 비트가 1인지 확인
                 	boolean allBitsOne = true;
@@ -35,8 +35,10 @@ public class StartUDPCheckThread implements Runnable {
 
                 	if (allBitsOne) {
                 	    System.out.println("all packet received");
+                	    //true or false 만 보냄
+                	    //tcpConnection.sendAckMessage_alltrue(allBitsOne);
+                	    tcpConnection.sendAckObject(receiver_udp.checkNewMessage);
                 	    
-                	    tcpConnection.sendAckMessage_alltrue(allBitsOne);
                 	    
                 	    Arrays.fill(receiver_udp.checkNewMessage, (byte) 0); // checkNewMessage 배열을 0으로 초기화
                 	    //byte 배열 초기화(무시해야할 비트들을 모두 1로)

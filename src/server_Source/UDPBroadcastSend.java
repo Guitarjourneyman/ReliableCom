@@ -1,5 +1,6 @@
 package server_Source;
 
+import GUI.GUI;
 import main.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,11 +20,11 @@ public class UDPBroadcastSend implements Runnable  {
     private int messageSize;
     private DatagramSocket socket = null;
     
-    public UDPBroadcastSend(String serverIP, JTextArea sendMessageArea,JTextArea consoleArea, int messageSize) {
+    public UDPBroadcastSend(String serverIP) {
     	this.serverIP = serverIP;
-    	this.sendMessageArea = sendMessageArea; 
-    	this.consoleArea = consoleArea;
-    	this.messageSize = messageSize; // messageSize는 보내고자 하는 메시지의 크기(60KB로 설정)
+    	this.sendMessageArea = GUI.sendMessageArea; 
+    	this.consoleArea = GUI.consoleArea;
+    	this.messageSize = Main.SIZE; // messageSize는 보내고자 하는 메시지의 크기(60KB로 설정)
     }
     /*
     public void startSend(String serverIP, int messageNum, int messageSize) { 
