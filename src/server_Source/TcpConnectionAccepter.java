@@ -105,8 +105,6 @@ public class TcpConnectionAccepter implements Runnable {
         private Socket clientSocket;
         
         
-        private AckCheck tcpCheck;
-        
         
         public ClientHandler(Socket clientSocket, TcpConnectionAccepter tcpAccepter, JTextArea receivedMessagesArea) {
 			this.clientSocket = clientSocket;
@@ -142,7 +140,7 @@ public class TcpConnectionAccepter implements Runnable {
             } finally {
                 // while문을 빠져나오면 Handler를 종료함
                 
-                stopTCPCheckThread();
+                receiverTcp.stopTCPCheck();
                 stopHandler();
             }
             
@@ -164,10 +162,7 @@ public class TcpConnectionAccepter implements Runnable {
                 System.out.println("Error closing client socket: " + e.getMessage());
             } 
         }
-        public void stopTCPCheckThread() {
-
-        	tcpCheck.stopChecking();
-        }
+        
     }
 
 }

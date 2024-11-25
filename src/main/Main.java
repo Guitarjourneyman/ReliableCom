@@ -124,14 +124,14 @@ public class Main {
 	/*   The methods are necessary by client */
 	public static void ComSetupResponse () {
 		tcp_connection = new TcpSocketConnection();
-        //receiver_udp = new UDPReceive();
+        receiver_udp = new UDPReceive();
         String serverIP = receiver_udp.startConnect_to_tcp();
         tcp_connection.startClient(serverIP);
         GUI.consoleArea.append("Client: "+serverIP+"가 TCP 소켓과 연결되었습니다. \n");
 	}
 
 	public static void ComReceive() {
-		//receiver_udp = new UDPReceive();
+		receiver_udp = new UDPReceive();
         new Thread(() -> receiver_udp.startServer()).start();
         GUI.consoleArea.append("UDP 수신 대기 중...\n");
         //UDP Broad메시지를 수신하였지 체크하는 스레드 생성 

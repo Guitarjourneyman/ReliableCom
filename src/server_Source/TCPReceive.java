@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 import javax.swing.JTextArea;
 
+import main.Ack;
+
 public class TCPReceive {
     /* 메시지를 받기만 하는 기능 구현 */
     private Socket socket;
@@ -17,7 +19,8 @@ public class TCPReceive {
     
     public int array_index =0;
     public int ignored_bits =0;
-
+    
+    private AckCheck startCheck;
     //public byte[] checkNewMessage;
     // 생성자에서 JTextArea 전달 받음
     
@@ -38,6 +41,8 @@ public class TCPReceive {
         this.socket = socket;
         handler = clientHandler;
         this.receivedMessagesArea = receivedMessagesArea;
+        
+        startCheck = new AckCheck(handler);
     }
     
     
@@ -116,7 +121,7 @@ public class TCPReceive {
     
     /*
     public void startReceiving() throws IOException { // 예외를 throw하여 ClientHandler에서 처리하도록 설계
-        AckCheck startCheck = new AckCheck(handler);
+        
 
         DataInputStream dataInputStream = null; // 데이터 수신을 위한 DataInputStream
        
@@ -158,58 +163,94 @@ public class TCPReceive {
         }
     }
 
+    */
+    
+    
+    
+    public void startReceiving() throws IOException {
+        ObjectInputStream objectInputStream = null; // Ack 객체를 수신하기 위한 ObjectInputStream
+
+        try {
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+            String clientIP = socket.getInetAddress().getHostAddress();
+            System.out.println("Server_TCP is open");
+
+            while (!socket.isClosed()) {
+                try {
+                    // **Ack 객체 수신**
+                    Ack receivedAck = (Ack) objectInputStream.readObject();
+
+                    // **수신된 메시지 처리**
+                    receive_message_num++;
+                    StringBuilder temp = printByteArrayAsBinary(receivedAck.getMessage());
+                    receivedMessagesArea.append("[" + receive_message_num + "] 수신된 Ack from " + clientIP + ":\n" +
+                                                " - isCompleted: " + receivedAck.isCompleted() + "\n" +
+                                                " - Size of Message: " + receivedAck.getSizeOfMessage() + "\n" +
+                                                " - byteMessage: " + temp + "\n" +
+                                                " - Time: " + receivedAck.getTime() + "\n");
+
+                    System.out.println("새로운 Ack 메시지가 수신되었습니다: " + receivedAck);
+
+                    // 완료 메시지인 경우 추가 처리
+                    if (receivedAck.isCompleted()) {
+                        startCheck.startChecking();
+                    }
+                } catch (EOFException e) {
+                    // 클라이언트가 연결을 닫은 경우
+                    System.out.println("EOFException: 클라이언트가 연결을 닫았습니다. IP: " + clientIP);
+                    break;
+                } catch (ClassNotFoundException e) {
+                    // 수신된 객체를 Ack로 변환할 수 없는 경우
+                    System.err.println("ClassNotFoundException: Ack 객체 변환 실패. IP: " + clientIP);
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // I/O 예외의 상세 정보를 출력
+                    System.err.println("IOException 발생: 메시지 읽기 실패");
+                    System.err.println(" - 원인: " + e.getMessage());
+                    System.err.println(" - 소켓 상태: isClosed=" + socket.isClosed() + ", isConnected=" + socket.isConnected());
+                    System.err.println(" - 클라이언트 IP: " + clientIP);
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            // 소켓 초기화 과정에서의 예외 처리
+            System.err.println("IOException: ObjectInputStream 생성 중 문제 발생");
+            System.err.println(" - 원인: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // 자원 정리
+            try {
+                if (objectInputStream != null) objectInputStream.close();
+            } catch (IOException e) {
+                System.err.println("ObjectInputStream 닫기 중 IOException 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+            try {
+                if (socket != null && !socket.isClosed()) socket.close();
+            } catch (IOException e) {
+                System.err.println("소켓 닫기 중 IOException 발생: " + e.getMessage());
+                e.printStackTrace();
+            }
+            System.out.println("TCP socket is closed");
+        }
+    }
+	
+    
     private StringBuilder printByteArrayAsBinary(byte[] byteArray) {
     	StringBuilder binaryStringBuilder = new StringBuilder();
         for (byte b : byteArray) {
             // 각 바이트를 0과 1로 변환
         	// 16진수 1111 1111과 &연산
             String binaryString = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
-            System.out.println(binaryString); // 변환된 이진수 출력
+            //System.out.println(binaryString); // 변환된 이진수 출력
             binaryStringBuilder.append(binaryString).append(" ");
             
         }
         return binaryStringBuilder;
     }
-    */
-    
-    public void startReceiving() throws IOException { 
-        ObjectInputStream objectInputStream = null; // Ack 객체를 수신하기 위한 ObjectInputStream
-        AckCheck startCheck = new AckCheck(handler);
-        try {
-            // ObjectInputStream 초기화
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-            String clientIP = socket.getInetAddress().getHostAddress(); // 클라이언트 IP 가져오기
-            System.out.println("Server_TCP is open");
-
-            while (!socket.isClosed()) { // 클라이언트와 연결이 유지되는 동안 메시지 수신
-                // **Ack 객체 수신**
-                Ack receivedAck = (Ack) objectInputStream.readObject(); // Ack 객체 역직렬화
-
-                // **Ack 객체 내용 출력**
-                receive_message_num++;
-                receivedMessagesArea.append("[" + receive_message_num + "] 수신된 Ack from " + clientIP + ":\n" +
-                                            " - isCompleted: " + receivedAck.isCompleted() + "\n" +
-                                            " - Size of Message: " + receivedAck.getSizeOfMessage() + "\n" +
-                                            " - Message: " + new String(receivedAck.getMessage()) + "\n" +
-                                            " - Time: " + receivedAck.getTime() + "\n");
-
-                System.out.println("새로운 Ack 메시지가 수신되었습니다: " + receivedAck);
-                
-                if(receivedAck.isCompleted()) { //true일 때만
-                	startCheck.startChecking(); // 필요 시 Ack 내용을 기반으로 추가 작업 호출
-                }
-                
-            }
-        } catch (ClassNotFoundException e) {
-            System.err.println("수신된 객체를 Ack로 변환할 수 없습니다.");
-            e.printStackTrace();
-        } finally {
-            // 자원 정리
-            if (objectInputStream != null) objectInputStream.close();
-            if (socket != null && !socket.isClosed()) socket.close();
-            System.out.println("TCP 소켓이 닫혔습니다.");
-        }
+    public void stopTCPCheck() {
+    	startCheck.stopChecking();
     }
 
 }
