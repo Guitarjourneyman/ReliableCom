@@ -162,10 +162,10 @@ public class TCPReceive {
             System.out.println("TCP 소켓이 닫혔습니다.");
         }
     }
-
-    */
+	*/
     
     
+    //Object 읽는 코드 
     
     public void startReceiving() throws IOException {
         ObjectInputStream objectInputStream = null; // Ack 객체를 수신하기 위한 ObjectInputStream

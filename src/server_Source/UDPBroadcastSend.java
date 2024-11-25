@@ -91,10 +91,10 @@ public class UDPBroadcastSend implements Runnable  {
 			long interval = 50;
 
 			while (true) {
-				if (Main.tcpconnectionManager.checkAllClientsNewMessage()) {
+				if (Main.clientManager.checkAllClientsNewMessage()) {
 
 					consoleArea.append("모든 클라이언트로부터 " + "[" + sentMessageCount + "]의 에코 메시지를 받았으므로 브로드캐스트 중지\n");
-					Main.tcpconnectionManager.AllClientsSetFalse(); // 에코메시지 수신여부 초기화
+					Main.clientManager.AllClientsSetFalse(); // 에코메시지 수신여부 초기화
 					sentMessageCount++; // 전송 메시지 카운트 증가
 
 				}

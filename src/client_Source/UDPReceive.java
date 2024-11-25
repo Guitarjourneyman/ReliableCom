@@ -241,7 +241,7 @@ public class UDPReceive {
                 // 비트가 0이라면 1로 설정
             	checkNewMessage[byteIndex] |= (1 << bitIndex);
                 System.out.println("Set checkNewMessage[" + packet_num + "]:");
-                StartUDPCheckThread.printByteArrayAsBinary(checkNewMessage); //배열 출력    
+                UDPCheckThread.printByteArrayAsBinary(checkNewMessage); //배열 출력    
             } else {
                 // 이미 비트가 1인 경우
                 System.out.println("checkNewMessage[" + packet_num + "] is already set to 1.");

@@ -36,8 +36,8 @@ public class AckCheck  {
 	public void startChecking() {
 
 		// 인덱스 번호에 해당하는 client 클래스 배열 호출
-		ClientMember clientinfo = ClientManager.getClient(handler.permanent_id);
-		clientinfo.setNewMsg(true);
+		ClientMember clientmember = ClientManager.getClient(handler.permanent_id);
+		clientmember.setNewMsg(true);
 		System.out.println("Client Num: " + handler.permanent_id + " Changed index value TRUE");
 		
 

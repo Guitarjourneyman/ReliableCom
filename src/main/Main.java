@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class Main {
 	/*Server*/
-	public static ClientManager tcpconnectionManager = new ClientManager();
+	public static ClientManager clientManager = new ClientManager();
 	public static int clients_tcp_index = 0; // 에코메시지의 배열의 인덱스
 	
     private static UDPBroadcastSend sender_udp;
@@ -111,7 +111,7 @@ public class Main {
         GUI.receivedMessagesArea.setText("");
         GUI.sendMessageArea.setText("");
         //Client 초기화
-        tcpconnectionManager.AllClientsReset();
+        clientManager.AllClientsReset();
         clients_tcp_index = 0;
         System.out.println("TcpConnectionAccepter sets null");
         //Udp sender 초기화
@@ -135,7 +135,7 @@ public class Main {
         new Thread(() -> receiver_udp.startServer()).start();
         GUI.consoleArea.append("UDP 수신 대기 중...\n");
         //UDP Broad메시지를 수신하였지 체크하는 스레드 생성 
-        StartUDPCheckThread udpCheckThread = new StartUDPCheckThread(receiver_udp,tcp_connection);
+        UDPCheckThread udpCheckThread = new UDPCheckThread(receiver_udp,tcp_connection);
         Thread udpCheck = new Thread(udpCheckThread);
         udpCheck.start();
 	}
