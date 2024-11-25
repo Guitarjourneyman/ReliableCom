@@ -111,6 +111,10 @@ public class TCPReceive {
             System.out.println("TCP 소켓이 닫혔습니다.");
         }
     }*/
+    
+    //boolean 받는 코드
+    
+    /*
     public void startReceiving() throws IOException { // 예외를 throw하여 ClientHandler에서 처리하도록 설계
         AckCheck startCheck = new AckCheck(handler);
 
@@ -166,8 +170,46 @@ public class TCPReceive {
         }
         return binaryStringBuilder;
     }
+    */
     
-    
-   
+    public void startReceiving() throws IOException { 
+        ObjectInputStream objectInputStream = null; // Ack 객체를 수신하기 위한 ObjectInputStream
+        AckCheck startCheck = new AckCheck(handler);
+        try {
+            // ObjectInputStream 초기화
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+            String clientIP = socket.getInetAddress().getHostAddress(); // 클라이언트 IP 가져오기
+            System.out.println("Server_TCP is open");
+
+            while (!socket.isClosed()) { // 클라이언트와 연결이 유지되는 동안 메시지 수신
+                // **Ack 객체 수신**
+                Ack receivedAck = (Ack) objectInputStream.readObject(); // Ack 객체 역직렬화
+
+                // **Ack 객체 내용 출력**
+                receive_message_num++;
+                receivedMessagesArea.append("[" + receive_message_num + "] 수신된 Ack from " + clientIP + ":\n" +
+                                            " - isCompleted: " + receivedAck.isCompleted() + "\n" +
+                                            " - Size of Message: " + receivedAck.getSizeOfMessage() + "\n" +
+                                            " - Message: " + new String(receivedAck.getMessage()) + "\n" +
+                                            " - Time: " + receivedAck.getTime() + "\n");
+
+                System.out.println("새로운 Ack 메시지가 수신되었습니다: " + receivedAck);
+                
+                if(receivedAck.isCompleted()) { //true일 때만
+                	startCheck.startChecking(); // 필요 시 Ack 내용을 기반으로 추가 작업 호출
+                }
+                
+            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("수신된 객체를 Ack로 변환할 수 없습니다.");
+            e.printStackTrace();
+        } finally {
+            // 자원 정리
+            if (objectInputStream != null) objectInputStream.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+            System.out.println("TCP 소켓이 닫혔습니다.");
+        }
+    }
 
 }

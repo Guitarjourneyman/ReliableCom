@@ -1,4 +1,7 @@
 package client_Source;
+
+import GUI.GUI;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -29,6 +32,13 @@ public class UDPReceive {
     public byte[] checkNewMessage; // 받은 패킷을 체크하는 배열
     public byte[] lastMessage; // 이전 배열(배열에 변화가 생겼을 때만 ack 전송)
     
+    
+    // 생성자에서 JTextArea 전달 받음
+    public UDPReceive() {
+        this.receivedMessagesArea = GUI.receivedMessagesArea;
+    
+    }
+    
     public static int calculateBits(int total_packets, int mode) { //byte배열을 사용하기 때문에 패킷 수가 8의 배수가 아니면 사용하지 않는 bit가 생김
         if (mode == 0) {
             // mode가 0이면 byte 배열 인덱스 계산
@@ -45,11 +55,7 @@ public class UDPReceive {
     public int Print_checkSerial() {
     	return checkSerial;
     }
-    // 생성자에서 JTextArea 전달 받음
-    public UDPReceive(JTextArea receivedMessagesArea) {
-        this.receivedMessagesArea = receivedMessagesArea;
     
-    }
     
     public static void reset_message_num() {
         receive_message_num = 0;
@@ -243,7 +249,7 @@ public class UDPReceive {
            }
     
     //Server에서 Reset 요청이 올 때
-    public static void resetUDPreceiving() {
+    public static void closeUDPbyReset() {
     	socket.close();
     }
   }            

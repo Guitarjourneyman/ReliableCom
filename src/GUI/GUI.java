@@ -143,14 +143,14 @@ public class GUI extends JFrame {
         buttonPanel_main.add(buttonPanel_2);
           
         buttonPanel_3.add(connection_Button);        
-        buttonPanel_main.add(buttonPanel_3);
+        //buttonPanel_main.add(buttonPanel_3);
         
         buttonPanel_4.add(connectionSetup_Button,BorderLayout.NORTH);
         buttonPanel_4.add(stopSetup_Button,BorderLayout.SOUTH);
         buttonPanel_main.add(buttonPanel_4);
         buttonPanel_5.add(sendButton_UDP,BorderLayout.NORTH);
         buttonPanel_5.add(sendStopButton_UDP,BorderLayout.SOUTH);
-        buttonPanel_5.add(receiveButton_UDP,BorderLayout.SOUTH);
+        //buttonPanel_5.add(receiveButton_UDP,BorderLayout.SOUTH);
         buttonPanel_main.add(buttonPanel_5);
                
         
