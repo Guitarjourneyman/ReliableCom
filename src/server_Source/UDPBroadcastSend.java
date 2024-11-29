@@ -1,12 +1,14 @@
 package server_Source;
 
 import GUI.GUI;
-import main.*;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import javax.swing.JTextArea;
+
+import com.example.reliablecom.main.*;
 
 public class UDPBroadcastSend implements Runnable  {
     private static final int PORT = 1996;

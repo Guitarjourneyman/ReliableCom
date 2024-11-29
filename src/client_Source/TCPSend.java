@@ -1,10 +1,11 @@
 package client_Source;
 
-import main.*;
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.example.reliablecom.main.*;
 
 public class TCPSend {
     

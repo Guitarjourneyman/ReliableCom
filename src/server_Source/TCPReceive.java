@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import javax.swing.JTextArea;
 
-import main.Ack;
+import com.example.reliablecom.main.Ack;
 
 public class TCPReceive {
     /* 메시지를 받기만 하는 기능 구현 */

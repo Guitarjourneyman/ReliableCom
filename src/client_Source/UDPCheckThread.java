@@ -1,12 +1,13 @@
 package client_Source;
 import java.util.Arrays;
 public class UDPCheckThread implements Runnable {
-    private final UDPReceive receiver_udp;
+    //private final UDPReceive receiver_udp;
     private final TcpSocketConnection tcpConnection;
-
-    public UDPCheckThread(UDPReceive receiver_udp, TcpSocketConnection tcpConnection) {
-        this.receiver_udp = receiver_udp;
+    private final TCPSend tcpsend;
+    public UDPCheckThread( TcpSocketConnection tcpConnection,TCPSend tcpsend) {
+        //this.receiver_udp = receiver_udp;
         this.tcpConnection = tcpConnection;
+        this.tcpsend = tcpsend;
         
     }
 
@@ -16,7 +17,7 @@ public class UDPCheckThread implements Runnable {
             
         	try {
 
-                if(!Arrays.equals(receiver_udp.checkNewMessage, receiver_udp.lastMessage)) { // checkNewMessage 배열에 변화가 생겼을 때만 ack 전송
+                if(!Arrays.equals(UDPReceive.checkNewMessage, UDPReceive.lastMessage)) { // checkNewMessage 배열에 변화가 생겼을 때만 ack 전송
                 	
                 	
                 	//byte배열만 Ack메시지로 보내게된다. sendAckMessage는 재정의되어있음
@@ -26,7 +27,7 @@ public class UDPCheckThread implements Runnable {
 
                 	// 배열의 모든 비트가 1인지 확인
                 	boolean allBitsOne = true;
-                	for (byte b : receiver_udp.checkNewMessage) {
+                	for (byte b : UDPReceive.checkNewMessage) {
                 	    if (b != (byte) 0xFF) { // 만약 한 바이트라도 0xFF가 아니라면
                 	        allBitsOne = false;
                 	        break;
@@ -37,16 +38,16 @@ public class UDPCheckThread implements Runnable {
                 	    System.out.println("all packet received");
                 	    /*모두 1이면 boolean의 Ack메시지만 보내도록 수정*/
                 	    //true or false 만 보냄
-                	    //tcpConnection.sendAckMessage_alltrue(allBitsOne);
+                	    //tcpsend.sendMessage_tcp_alltrue(allBitsOne);
                 	    
                 	    //객체 타입으로 전송
-                	    tcpConnection.sendAckObject(receiver_udp.checkNewMessage);
+                	    tcpsend.sendAckObject(UDPReceive.checkNewMessage);
                 	    
                 	    
-                	    Arrays.fill(receiver_udp.checkNewMessage, (byte) 0); // checkNewMessage 배열을 0으로 초기화
+                	    Arrays.fill(UDPReceive.checkNewMessage, (byte) 0); // checkNewMessage 배열을 0으로 초기화
                 	    //byte 배열 초기화(무시해야할 비트들을 모두 1로)
                         for(int i=UDPReceive.array_index*8 - UDPReceive.ignored_bits+1 ; i<= UDPReceive.array_index*8; i++){
-                        	receiver_udp.SetNewMsgBit(i);     	
+                        	UDPReceive.SetNewMsgBit(i);     	
                         	} 
                         
                        
@@ -55,7 +56,7 @@ public class UDPCheckThread implements Runnable {
                 	}
                 	
                 	// 배열의 내용을 복사하여 lastMessage에 저장
-                	receiver_udp.lastMessage = Arrays.copyOf(receiver_udp.checkNewMessage, receiver_udp.checkNewMessage.length);
+                	UDPReceive.lastMessage = Arrays.copyOf(UDPReceive.checkNewMessage, UDPReceive.checkNewMessage.length);
                 
                 
                 	

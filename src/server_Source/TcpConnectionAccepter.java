@@ -1,6 +1,5 @@
 package server_Source;
 import GUI.GUI;
-import main.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,8 +8,10 @@ import java.nio.channels.ClosedByInterruptException;
 import java.util.ArrayList;
 import javax.swing.JTextArea;
 
+import com.example.reliablecom.main.*;
+
 public class TcpConnectionAccepter implements Runnable {
-    private static final int PORT = 8189; // 수신할 포트
+    private static final int PORT = 1955; // 수신할 포트
     private ServerSocket serverSocket;
     
     private JTextArea receivedMessagesArea;
