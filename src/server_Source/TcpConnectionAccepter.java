@@ -1,5 +1,5 @@
 package server_Source;
-
+import GUI.GUI;
 import main.*;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JTextArea;
 
 public class TcpConnectionAccepter implements Runnable {
-    private static final int PORT = 8189; // 수신할 포트
+    private static final int PORT = 1955; // 수신할 포트
     private ServerSocket serverSocket;
     
     private JTextArea receivedMessagesArea;
@@ -20,9 +20,9 @@ public class TcpConnectionAccepter implements Runnable {
     // 모든 ClientHandler 인스턴스를 저장할 리스트 -> ClientInfo에 clientHandler를 넣는게 나을 듯
     private final ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     
-    public TcpConnectionAccepter(JTextArea receivedMessagesArea, JTextArea consoleArea) {
-        this.receivedMessagesArea = receivedMessagesArea;
-        this.consoleArea = consoleArea;
+    public TcpConnectionAccepter() {
+        this.receivedMessagesArea = GUI.receivedMessagesArea;
+        this.consoleArea = GUI.consoleArea;
     }
     
 
@@ -44,7 +44,8 @@ public class TcpConnectionAccepter implements Runnable {
                 consoleArea.append("Client connected: " + clientIP+"\n");
               
                 // 각 클라이언트에 대해 새로운 핸들러 스레드를 생성
-                TcpConnectionManager.addClient(clientSocket.getInetAddress().getHostAddress(),clientSocket,true,false);                
+                ClientManager.addClient(clientSocket.getInetAddress().getHostAddress(),clientSocket,true,false);
+                
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this, receivedMessagesArea);
                 //clientHandler객체를 담아두는 리스트 생성 -> 모든 객체를 반납하기위해서 만듦
                 clientHandlers.add(clientHandler);
@@ -104,8 +105,6 @@ public class TcpConnectionAccepter implements Runnable {
         private Socket clientSocket;
         
         
-        private AckCheck tcpCheck;
-        
         
         public ClientHandler(Socket clientSocket, TcpConnectionAccepter tcpAccepter, JTextArea receivedMessagesArea) {
 			this.clientSocket = clientSocket;
@@ -141,7 +140,7 @@ public class TcpConnectionAccepter implements Runnable {
             } finally {
                 // while문을 빠져나오면 Handler를 종료함
                 
-                stopTCPCheckThread();
+                receiverTcp.stopTCPCheck();
                 stopHandler();
             }
             
@@ -163,10 +162,7 @@ public class TcpConnectionAccepter implements Runnable {
                 System.out.println("Error closing client socket: " + e.getMessage());
             } 
         }
-        public void stopTCPCheckThread() {
-
-        	tcpCheck.stopChecking();
-        }
+        
     }
 
 }

@@ -1,4 +1,7 @@
 package client_Source;
+
+import GUI.GUI;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -26,8 +29,15 @@ public class UDPReceive {
     //edit: Defined socket as a static 
     private static DatagramSocket socket;
     
-    public byte[] checkNewMessage; // 받은 패킷을 체크하는 배열
-    public byte[] lastMessage; // 이전 배열(배열에 변화가 생겼을 때만 ack 전송)
+    public static byte[] checkNewMessage; // 받은 패킷을 체크하는 배열
+    public static byte[] lastMessage; // 이전 배열(배열에 변화가 생겼을 때만 ack 전송)
+    
+    
+    // 생성자에서 JTextArea 전달 받음
+    public UDPReceive() {
+        this.receivedMessagesArea = GUI.receivedMessagesArea;
+    
+    }
     
     public static int calculateBits(int total_packets, int mode) { //byte배열을 사용하기 때문에 패킷 수가 8의 배수가 아니면 사용하지 않는 bit가 생김
         if (mode == 0) {
@@ -45,11 +55,7 @@ public class UDPReceive {
     public int Print_checkSerial() {
     	return checkSerial;
     }
-    // 생성자에서 JTextArea 전달 받음
-    public UDPReceive(JTextArea receivedMessagesArea) {
-        this.receivedMessagesArea = receivedMessagesArea;
     
-    }
     
     public static void reset_message_num() {
         receive_message_num = 0;
@@ -225,7 +231,7 @@ public class UDPReceive {
     }
     
     // 수신한 패킷 번호에 맞는 bit를 set 시킴
-    public void SetNewMsgBit(int packet_num) {
+    public static void SetNewMsgBit(int packet_num) {
             // packet_num의 위치에 해당하는 비트를 설정(0번째 비트부터 채움)
             int byteIndex = (packet_num-1) / 8;   // 해당 비트가 속한 바이트 인덱스
             int bitIndex = (packet_num-1) % 8;    // 해당 바이트 내의 비트 위치
@@ -235,7 +241,7 @@ public class UDPReceive {
                 // 비트가 0이라면 1로 설정
             	checkNewMessage[byteIndex] |= (1 << bitIndex);
                 System.out.println("Set checkNewMessage[" + packet_num + "]:");
-                StartUDPCheckThread.printByteArrayAsBinary(checkNewMessage); //배열 출력    
+                UDPCheckThread.printByteArrayAsBinary(checkNewMessage); //배열 출력    
             } else {
                 // 이미 비트가 1인 경우
                 System.out.println("checkNewMessage[" + packet_num + "] is already set to 1.");
@@ -243,7 +249,7 @@ public class UDPReceive {
            }
     
     //Server에서 Reset 요청이 올 때
-    public static void resetUDPreceiving() {
+    public static void closeUDPbyReset() {
     	socket.close();
     }
   }            

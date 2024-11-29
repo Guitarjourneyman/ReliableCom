@@ -1,5 +1,6 @@
 package server_Source;
 
+import GUI.GUI;
 import main.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,11 +20,11 @@ public class UDPBroadcastSend implements Runnable  {
     private int messageSize;
     private DatagramSocket socket = null;
     
-    public UDPBroadcastSend(String serverIP, JTextArea sendMessageArea,JTextArea consoleArea, int messageSize) {
+    public UDPBroadcastSend(String serverIP) {
     	this.serverIP = serverIP;
-    	this.sendMessageArea = sendMessageArea; 
-    	this.consoleArea = consoleArea;
-    	this.messageSize = messageSize; // messageSize는 보내고자 하는 메시지의 크기(60KB로 설정)
+    	this.sendMessageArea = GUI.sendMessageArea; 
+    	this.consoleArea = GUI.consoleArea;
+    	this.messageSize = Main.SIZE; // messageSize는 보내고자 하는 메시지의 크기(60KB로 설정)
     }
     /*
     public void startSend(String serverIP, int messageNum, int messageSize) { 
@@ -90,10 +91,10 @@ public class UDPBroadcastSend implements Runnable  {
 			long interval = 50;
 
 			while (true) {
-				if (Main.tcpconnectionManager.checkAllClientsNewMessage()) {
+				if (Main.clientManager.checkAllClientsNewMessage()) {
 
 					consoleArea.append("모든 클라이언트로부터 " + "[" + sentMessageCount + "]의 에코 메시지를 받았으므로 브로드캐스트 중지\n");
-					Main.tcpconnectionManager.AllClientsSetFalse(); // 에코메시지 수신여부 초기화
+					Main.clientManager.AllClientsSetFalse(); // 에코메시지 수신여부 초기화
 					sentMessageCount++; // 전송 메시지 카운트 증가
 
 				}
